@@ -1,0 +1,18 @@
+const errorMessage = (message) => ({
+	message,
+});
+
+export const errorHandler = (err, res) => {
+	if (typeof err === 'string') {
+		const is404 = err.toLowerCase().endsWith('not found');
+		const statusCode = is404 ? 404 : 400;
+		return res.status(statusCode).json(errorMessage(err));
+	}
+
+	if (err.name === 'UnauthorizedError') {
+		return res.status(401).json(errorMessage('Session Expired please'));
+	}
+
+	console.log(err);
+	return res.status(500).json(errorMessage(err));
+};
